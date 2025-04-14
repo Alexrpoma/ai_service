@@ -20,6 +20,7 @@ app = FastAPI(title="AI Server",
 config = configparser.ConfigParser()
 config.read('config.ini')
 SEARCHER_SERVICE = config.get('SEARCHER', 'URL')
+MAX_LENGTH = config.getint('LLM', 'MAX_NEW_TOKENS')
 
 @app.get("/")
 async def get():
@@ -99,10 +100,6 @@ async def websocket_endpoint(websocket: WebSocket, client_id: str):
                     continue
 
                 if qdrant_data:
-                    item = qdrant_data[0]
-                    summary = item.get("summary", "")
-                    url = item.get("url", "")
-                    max_length = 512
 
                     queue = asyncio.Queue()
 
@@ -111,7 +108,7 @@ async def websocket_endpoint(websocket: WebSocket, client_id: str):
 
                     logging.info(f"WS {client_id}: Dispatching LLM generation for query.")
 
-                    asyncio.create_task(llm_service.run_async_stream(summary, url, max_length, queue))
+                    asyncio.create_task(llm_service.run_async_stream(qdrant_data, MAX_LENGTH, queue))
                 else:
                     logging.warning(f"WS {client_id}: No data received from Searcher, but no error reported.")
                     await manager.send_personal_message("INFO: No specific data found for query.", client_id)

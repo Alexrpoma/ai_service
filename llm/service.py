@@ -56,8 +56,13 @@ class Service:
             streamer.queue.put_nowait(streamer.stop_signal)
 
 
-    async def run_async_stream(self, qdrant_response: str, url: str, max_length: int, queue: asyncio.Queue):
-        payload = f"summary: {qdrant_response} URL: {url}"
+    async def run_async_stream(self, qdrant_data: list, max_length: int, queue: asyncio.Queue):
+
+        payload = ""
+        for i, data in enumerate(qdrant_data):
+            payload += f"{i + 1}. {data['summary']}\n"
+            payload += f"URL: {data['url']}\n\n"
+
         messages = [
             {"role": "system", "content": self.__prompt},
             {"role": "user", "content": payload},
