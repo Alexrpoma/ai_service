@@ -60,7 +60,7 @@ class Service:
 
         payload = ""
         for i, data in enumerate(qdrant_data):
-            payload += f"{i + 1}. {data['summary']}\n"
+            payload += f"{data['summary']}\n"
             payload += f"URL: {data['url']}\n\n"
 
         messages = [
