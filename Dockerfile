@@ -9,4 +9,4 @@ RUN pip install --upgrade pip \
     && pip install bitsandbytes accelerate \
     && pip install -r requirements.txt
 EXPOSE 8001
-CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8001"]
+CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8001"]
